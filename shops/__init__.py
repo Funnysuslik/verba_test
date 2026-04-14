@@ -1,0 +1,1 @@
+"""Shop-specific implementations package."""

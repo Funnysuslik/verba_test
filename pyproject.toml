@@ -1,0 +1,12 @@
+[project]
+name = "verba-test"
+version = "0.1.0"
+description = "Wildberries catalog parser for wool coat query"
+requires-python = ">=3.11"
+dependencies = [
+  "httpx>=0.28.1",
+  "openpyxl>=3.1.5",
+  "pydantic>=2.11.0",
+  "python-dotenv>=1.1.0",
+  "requests>=2.32.0",
+]
