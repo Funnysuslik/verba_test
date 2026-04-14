@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import argparse
 import sys
 from pathlib import Path
 from typing import Any
@@ -21,8 +20,8 @@ class WBDefaults:
         "https://search.wb.ru/exactmatch/ru/common/v5/search",
         "https://www.wildberries.ru/__internal/u-search/exactmatch/ru/common/v18/search",
     ]
-    OUTPUT_CATALOG = "output/catalog.xlsx"
-    OUTPUT_FILTERED = "output/catalog_filtered.xlsx"
+    OUTPUT_CATALOG = f"output/catalog_{SEARCH_WORD}.xlsx"
+    OUTPUT_FILTERED = f"output/catalog_{SEARCH_WORD}_filtered.xlsx"
     PRODUCT_URL = "https://www.wildberries.ru/catalog/{product_id}/detail.aspx"
     SELLER_URL = "https://www.wildberries.ru/seller/{seller_id}"
     IMAGES_URL = "https://mow-basket-cdn-31.geobasket.ru/vol{vol}/part{part}/{product_id}/images/c516x688/{image_id}.webp"
@@ -225,13 +224,12 @@ class WildberriesParser:
 
 
 def main() -> None:
-    args = _parse_args()
     config = {
-        "query": args.query,
-        "page_size": args.page_size,
-        "timeout": args.timeout,
-        "retries": args.retries,
-        "run_http": args.run_http,
+        "query": WBDefaults.SEARCH_WORD,
+        "page_size": WBDefaults.PAGE_SIZE,
+        "timeout": CrowlerDefaults.TIMEOUT,
+        "retries": CrowlerDefaults.RETRIES,
+        "run_http": CrowlerDefaults.RUN_HTTP,
         "base_urls": WBDefaults.BASE_URLS,
     }
     crawler = WildberriesCrawler(config=config)
@@ -259,21 +257,6 @@ def main() -> None:
         f"Saved {len(products)} rows to {WBDefaults.OUTPUT_CATALOG} and "
         f"{len(filtered_catalog)} rows to {WBDefaults.OUTPUT_FILTERED}."
     )
-
-
-def _parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="WB catalog scaffold")
-    parser.add_argument("--query", default=WBDefaults.SEARCH_WORD, help="Search query")
-    parser.add_argument("--page-size", type=int, default=WBDefaults.PAGE_SIZE, help="WB spp/page size")
-    parser.add_argument("--timeout", type=int, default=CrowlerDefaults.TIMEOUT, help="Request timeout (seconds)")
-    parser.add_argument("--retries", type=int, default=CrowlerDefaults.RETRIES, help="Retries per endpoint")
-    parser.add_argument(
-        "--run-http",
-        action=argparse.BooleanOptionalAction,
-        default=CrowlerDefaults.RUN_HTTP,
-        help="Enable real HTTP requests",
-    )
-    return parser.parse_args()
 
 
 if __name__ == "__main__":
